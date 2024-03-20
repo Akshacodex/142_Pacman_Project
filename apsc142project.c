@@ -22,7 +22,8 @@
 // dot_map is a pointer to a dynamically allocated map for keeping track of what dots are left
 char *map = NULL, *dot_map = NULL;
 // width and height store the width and height of map, NOT counting outer walls
-int width, height;
+int* width;
+int* height;
 
 
 
@@ -40,6 +41,9 @@ int width, height;
  */
 int main(void) {
     setbuf(stdout, NULL);
+
     load_map("map.txt", width, height);
+
+
     return NO_ERROR;
 }
