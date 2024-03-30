@@ -43,6 +43,7 @@ int main(void) {
     setbuf(stdout, NULL);
 
     load_map("map.txt", width, height);
+    free(map);
 
 
     return NO_ERROR;

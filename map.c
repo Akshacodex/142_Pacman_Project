@@ -18,6 +18,8 @@ int move_actor(int * y, int * x, char direction, int eat_dots) {
 }
 
 int is_wall(int y, int x) {
+
+
     return NOT_WALL;
 }
 
@@ -29,41 +31,58 @@ char * load_map(char * filename, int* map_height, int* map_width) {
         exit(0);
     }
 
-    char *real_map = (char *)malloc(121 * sizeof(char));
+    int w = 0, h = 1;
+    char characters;
 
-    for (int i = 0; i < 11; ++i) {
+    do {
+        characters = getc(file);
+        if (characters == '\n') {
+            h++;
+        }
+        else if (characters == 'W' || characters == 'G' || characters== '.' || characters=='P'){
+            w++;
+        }
+    } while(characters != EOF);
+
+    w /= h;
+    w += 2;
+    h += 2;
+
+    fseek(file, 0, SEEK_SET);
+
+    char *real_map = (char *)malloc((w * h) * sizeof(char));
+
+    for (int i = 0; i < w; ++i) {
         real_map[i] = 'W';
     }
+
     int counter = 0;
-    for (int y = 11; y < 121 - 11; ++y) {
-        if(y%11 == 0 || (y%(21+counter*11)) == 0){
-            if (y % 11 == 0) {
+    for (int y = w; y < (h - 1) * w; ++y) {
+        if (y % w == 0 || (y % ((2 * w - 1) + counter * w)) == 0){
+            if (y % w == 0) {
                 real_map[y] = 'W';
             }
-            if (y % (21 + counter * 11) == 0) {
+            if (y % ((2 * w - 1) + counter * w) == 0) {
                 real_map[y] = 'W';
                 counter++;
             }
-        }else{
-            fscanf(file, "%c  ", &real_map[y]);
+        } else {
+            fscanf(file, " %c", &real_map[y]);
         }
     }
-    for (int i = 110; i < 121; ++i) {
+    for (int i = (h - 1) * w; i < h * w; ++i) {
         real_map[i] = 'W';
     }
 
     fclose(file);
 
-    for (int y = 0; y < 11; ++y) {
-        for (int x = 0; x < 11; ++x) {
-            printf("%c  " ,real_map[y * 11 + x]);
-            //printf("%d  ", y * 11 + x);
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            printf("%c  ",real_map[y * w + x]);
+            // printf("%d  ", y * 11 + x);
         }
         printf("\n");
-
     }
-
-    fclose(file);
 
     return real_map;
 
