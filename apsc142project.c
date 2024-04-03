@@ -56,14 +56,18 @@ int main(void) {
         printf("Enter direction (w, a, s, d): ");
         scanf(" %c", &direction);
 
+        int result = move_actor(&pacY, &pacX, direction, 0);
 
-        int move_result = move_actor(&pacY, &pacX, direction, 0);
-
-        if (move_result == MOVED_OKAY) {
+        if (result == MOVED_OKAY) {
 
             print_map(map_width, map_height);
 
+        } else if (result == MOVED_WALL) {
+            printf("Pacman cannot move in to a wall DUMBASS!\na");
+        } else if (result == MOVED_INVALID_DIRECTION) {
+            printf("Do you live under a rock? The options are W,A,S,D.\n");
         }
+
 
     }
 
