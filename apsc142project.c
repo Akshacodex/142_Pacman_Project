@@ -56,12 +56,11 @@ int main(void) {
         printf("Enter direction (w, a, s, d): ");
         scanf(" %c", &direction);
 
-        // Move Pacman
-        int move_result = move_actor(&pacY, &pacX, direction, 0);  // Assuming not eating dots for now
 
+        int move_result = move_actor(&pacY, &pacX, direction, 0);
 
         if (move_result == MOVED_OKAY) {
-            // Print the updated map
+
             print_map(map_width, map_height);
 
         }

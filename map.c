@@ -15,38 +15,38 @@ int w = 0, h = 1;
 int move_actor(int * y, int * x, char direction, int eat_dots) {
 
     switch (direction) {
-        case 'w': // Move left
+        case 'w':
             if (*y > 0 && !is_wall(*y - 1, *x)) {
-                map[*y * w + *x] = ' ';  // Clear the current position
-                (*y)--;  // Move up
-                map[*y * w + *x] = 'P';  // Update the new position
+                map[*y * w + *x] = ' ';
+                (*y)--;
+                map[*y * w + *x] = 'P';
                 return MOVED_OKAY;
             } else {
             return MOVED_WALL;
             }
         case 'a':
             if (*x > 0 && !is_wall(*y, *x - 1)) {
-                map[*y * w + *x] = ' ';  // Clear the current position
-                (*x)--;  // Move left
-                map[*y * w + *x] = 'P';  // Update the new position
+                map[*y * w + *x] = ' ';
+                (*x)--;
+                map[*y * w + *x] = 'P';
                 return MOVED_OKAY;
             } else {
                 return MOVED_WALL;
             }
         case 's':
             if (*y < map_height - 1 && !is_wall(*y + 1, *x)) {
-                map[*y * w + *x] = ' ';  // Clear the current position
-                (*y)++;  // Move down
-                map[*y * w + *x] = 'P';  // Update the new position
+                map[*y * w + *x] = ' ';
+                (*y)++;
+                map[*y * w + *x] = 'P';
                 return MOVED_OKAY;
             } else {
                 return MOVED_WALL;
             }
         case 'd':
             if (*x < map_width - 1 && !is_wall(*y, *x + 1)) {
-                map[*y * w + *x] = ' ';  // Clear the current position
-                (*x)++;  // Move right
-                map[*y * w + *x] = 'P';  // Update the new position
+                map[*y * w + *x] = ' ';
+                (*x)++;
+                map[*y * w + *x] = 'P';
                 return MOVED_OKAY;
             } else {
                 return MOVED_WALL;
