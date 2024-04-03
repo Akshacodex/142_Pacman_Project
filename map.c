@@ -9,29 +9,72 @@
 #include "map.h"
 
 extern char *map, *dot_map;
-extern int width, height;
+
+int w = 0, h = 1;
 
 int move_actor(int * y, int * x, char direction, int eat_dots) {
 
-
-    return MOVED_OKAY;
+    switch (direction) {
+        case 'w': // Move left
+            if (*y > 0 && !is_wall(*y - 1, *x)) {
+                map[*y * w + *x] = ' ';  // Clear the current position
+                (*y)--;  // Move up
+                map[*y * w + *x] = 'P';  // Update the new position
+                return MOVED_OKAY;
+            } else {
+            return MOVED_WALL;
+            }
+        case 'a':
+            if (*x > 0 && !is_wall(*y, *x - 1)) {
+                map[*y * w + *x] = ' ';  // Clear the current position
+                (*x)--;  // Move left
+                map[*y * w + *x] = 'P';  // Update the new position
+                return MOVED_OKAY;
+            } else {
+                return MOVED_WALL;
+            }
+        case 's':
+            if (*y < map_height - 1 && !is_wall(*y + 1, *x)) {
+                map[*y * w + *x] = ' ';  // Clear the current position
+                (*y)++;  // Move down
+                map[*y * w + *x] = 'P';  // Update the new position
+                return MOVED_OKAY;
+            } else {
+                return MOVED_WALL;
+            }
+        case 'd':
+            if (*x < map_width - 1 && !is_wall(*y, *x + 1)) {
+                map[*y * w + *x] = ' ';  // Clear the current position
+                (*x)++;  // Move right
+                map[*y * w + *x] = 'P';  // Update the new position
+                return MOVED_OKAY;
+            } else {
+                return MOVED_WALL;
+            }
+        default:
+            return MOVED_INVALID_DIRECTION;
+    }
 }
+
 
 int is_wall(int y, int x) {
 
+    if (map[y * w + x] == 'W') {
+        return YES_WALL;
+    } else {
+        return NOT_WALL;
+    }
 
-    return NOT_WALL;
 }
 
 char * load_map(char * filename, int* map_height, int* map_width) {
 
-    FILE *file = fopen("map.txt", "r");
+    FILE *file = fopen (filename, "r");
 
     if (!file) {
-        exit(0);
+        return NULL;
     }
 
-    int w = 0, h = 1;
     char characters;
 
     do {
@@ -48,43 +91,51 @@ char * load_map(char * filename, int* map_height, int* map_width) {
     w += 2;
     h += 2;
 
-    fseek(file, 0, SEEK_SET);
+    rewind(file);
 
-    char *real_map = (char *)malloc((w * h) * sizeof(char));
+    map = (char *)malloc((w * h) * sizeof(char));
 
     for (int i = 0; i < w; ++i) {
-        real_map[i] = 'W';
+        map[i] = 'W';
     }
 
     int counter = 0;
     for (int y = w; y < (h - 1) * w; ++y) {
         if (y % w == 0 || (y % ((2 * w - 1) + counter * w)) == 0){
             if (y % w == 0) {
-                real_map[y] = 'W';
+                map[y] = 'W';
             }
             if (y % ((2 * w - 1) + counter * w) == 0) {
-                real_map[y] = 'W';
+                map[y] = 'W';
                 counter++;
             }
         } else {
-            fscanf(file, " %c", &real_map[y]);
+            fscanf(file, " %c", &map[y]);
+            if (map[y] == 'P') {
+                pacX = y % w;
+                pacY = y % h;
+
+            }
         }
     }
     for (int i = (h - 1) * w; i < h * w; ++i) {
-        real_map[i] = 'W';
+        map[i] = 'W';
     }
 
     fclose(file);
 
-    for (int y = 0; y < h; ++y) {
-        for (int x = 0; x < w; ++x) {
-            printf("%c  ",real_map[y * w + x]);
-            // printf("%d  ", y * 11 + x);
+    *map_height = h;
+    *map_width = w;
+
+    return map;
+}
+
+void print_map(int i, int j) {
+    for (int y = 0; y < j; ++y) {
+        for (int x = 0; x < i; ++x) {
+            printf("%c  ", map[(y * i) + x]);
+            //printf("%d  ", y * 11 + x);
         }
         printf("\n");
     }
-
-    return real_map;
-
-    return NULL;
 }

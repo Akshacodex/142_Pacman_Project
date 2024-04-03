@@ -22,8 +22,8 @@
 // dot_map is a pointer to a dynamically allocated map for keeping track of what dots are left
 char *map = NULL, *dot_map = NULL;
 // width and height store the width and height of map, NOT counting outer walls
-int* width;
-int* height;
+int map_width, map_height;
+int pacX, pacY;
 
 
 
@@ -42,9 +42,33 @@ int* height;
 int main(void) {
     setbuf(stdout, NULL);
 
-    load_map("map.txt", width, height);
-    free(map);
+    load_map("map.txt", &map_height, &map_width);
 
+    // printf("Map dimensions: %d x %d\n", map_width, map_height);
+
+    print_map(map_width, map_height);
+
+    // printf("%d, %d", pacX, pacY);
+
+    char direction;
+    while (1) {
+
+        printf("Enter direction (w, a, s, d): ");
+        scanf(" %c", &direction);
+
+        // Move Pacman
+        int move_result = move_actor(&pacY, &pacX, direction, 0);  // Assuming not eating dots for now
+
+
+        if (move_result == MOVED_OKAY) {
+            // Print the updated map
+            print_map(map_width, map_height);
+
+        }
+
+    }
+
+    free(map);
 
     return NO_ERROR;
 }

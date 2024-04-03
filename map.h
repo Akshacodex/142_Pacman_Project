@@ -95,5 +95,10 @@ int move_actor(int * y, int * x, char direction, int eat_dots);
 
 /** Other function prototypes can go below here **/
 
+void print_map(int i, int j);
+
+extern int pacX, pacY;
+
+extern int map_width, map_height;
 
 #endif //PROJECT_MAP_H
