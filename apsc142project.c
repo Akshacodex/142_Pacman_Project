@@ -24,7 +24,7 @@ char *map = NULL, *dot_map = NULL;
 // width and height store the width and height of map, NOT counting outer walls
 int map_width, map_height;
 int pacX, pacY;
-
+char direction;
 
 
 /**
@@ -50,11 +50,12 @@ int main(void) {
 
     // printf("%d, %d", pacX, pacY);
 
-    char direction;
     while (1) {
 
-        printf("Enter direction (w, a, s, d): ");
-        scanf(" %c", &direction);
+        printf("Enter direction: ");
+        direction = getch();
+        printf("%c", direction);
+        printf("\n");
 
         int result = move_actor(&pacY, &pacX, direction, 0);
 
@@ -63,11 +64,18 @@ int main(void) {
             print_map(map_width, map_height);
 
         } else if (result == MOVED_WALL) {
-            printf("Pacman cannot move in to a wall DUMBASS!\na");
+
+            printf("Pacman cannot move in to a wall DUMBASS!\n");
+
         } else if (result == MOVED_INVALID_DIRECTION) {
+
             printf("Do you live under a rock? The options are W,A,S,D.\n");
+
         }
 
+//        if () {
+//            break;
+//        }
 
     }
 

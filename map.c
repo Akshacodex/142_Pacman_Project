@@ -14,48 +14,45 @@ int w = 0, h = 1;
 
 int move_actor(int * y, int * x, char direction, int eat_dots) {
 
+    map[*y * w + *x] = ' ';
+
     switch (direction) {
         case 'w':
             if (*y > 0 && !is_wall(*y - 1, *x)) {
-                map[*y * w + *x] = ' ';
                 (*y)--;
-                map[*y * w + *x] = 'P';
-                return MOVED_OKAY;
             } else {
-            return MOVED_WALL;
+                return MOVED_WALL;
             }
+            break;
         case 'a':
             if (*x > 0 && !is_wall(*y, *x - 1)) {
-                map[*y * w + *x] = ' ';
                 (*x)--;
-                map[*y * w + *x] = 'P';
-                return MOVED_OKAY;
             } else {
                 return MOVED_WALL;
             }
+            break;
         case 's':
             if (*y < map_height - 1 && !is_wall(*y + 1, *x)) {
-                map[*y * w + *x] = ' ';
                 (*y)++;
-                map[*y * w + *x] = 'P';
-                return MOVED_OKAY;
             } else {
                 return MOVED_WALL;
             }
+            break;
         case 'd':
             if (*x < map_width - 1 && !is_wall(*y, *x + 1)) {
-                map[*y * w + *x] = ' ';
                 (*x)++;
-                map[*y * w + *x] = 'P';
-                return MOVED_OKAY;
             } else {
                 return MOVED_WALL;
             }
+            break;
         default:
             return MOVED_INVALID_DIRECTION;
     }
-}
 
+    map[*y * w + *x] = 'P';
+
+    return MOVED_OKAY;
+}
 
 int is_wall(int y, int x) {
 
@@ -113,8 +110,12 @@ char * load_map(char * filename, int* map_height, int* map_width) {
             fscanf(file, " %c", &map[y]);
             if (map[y] == 'P') {
                 pacX = y % w;
-                pacY = y % h;
+                pacY = y / h;
 
+            }
+            if (map[y] == 'G') {
+                ghost_X = y % w;
+                ghost_Y = y / h;
             }
         }
     }
@@ -133,6 +134,23 @@ char * load_map(char * filename, int* map_height, int* map_width) {
 void print_map(int i, int j) {
     for (int y = 0; y < j; ++y) {
         for (int x = 0; x < i; ++x) {
+            switch (map[y * i + x]) {
+                case 'W':
+                    change_text_colour(WHITE);
+                    break;
+                case 'G':
+                    change_text_colour(PINK);
+                    break;
+                case 'P':
+                    change_text_colour(YELLOW);
+                    break;
+                case '.':
+                    change_text_colour(BLUE);
+                    break;
+                default:
+                    change_text_colour(WHITE);
+                    break;
+            }
             printf("%c  ", map[(y * i) + x]);
             //printf("%d  ", y * 11 + x);
         }
