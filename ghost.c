@@ -4,6 +4,8 @@
 #include "defines.h"
 #include "ghost.h"
 
+int ghost_X, ghost_Y;
+
 char sees_pacman(int pacman_y, int pacman_x, int ghost_y, int ghost_x) {
     return SEES_NOTHING;
 }

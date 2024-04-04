@@ -32,5 +32,7 @@ char sees_pacman(int pacman_y, int pacman_x, int ghost_y, int ghost_x);
 
 /** Other function prototypes can go below here **/
 
+extern int ghost_X, ghost_Y;
+
 
 #endif //PROJECT_GHOST_H

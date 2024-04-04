@@ -7,6 +7,7 @@
 #include "defines.h"
 #include "colours.h"
 #include "map.h"
+#include "ghost.h"
 
 extern char *map, *dot_map;
 
@@ -111,11 +112,12 @@ char * load_map(char * filename, int* map_height, int* map_width) {
             if (map[y] == 'P') {
                 pacX = y % w;
                 pacY = y / h;
-
+               // printf("%d, %d", pacX, pacY);
             }
             if (map[y] == 'G') {
                 ghost_X = y % w;
                 ghost_Y = y / h;
+                printf("%d, %d\n", ghost_X, ghost_Y);
             }
         }
     }
