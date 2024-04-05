@@ -23,10 +23,10 @@
 char *map = NULL, *dot_map = NULL;
 // width and height store the width and height of map, NOT counting outer walls
 int map_width, map_height;
-int pacX, pacY;
+int pacX = -1, pacY = -1;
 char direction;
 int ghost_X[MAX_GHOSTS], ghost_Y[MAX_GHOSTS];
-int run = 1;
+
 
 
 /**
@@ -46,17 +46,15 @@ int main(void) {
 
     load_map(MAP_NAME, &map_height, &map_width);
 
-//    if (map == NULL || map_width <= 0 || map_height <= 0){
-//
+//    if (!load_map(MAP_NAME, &map_height, &map_width)) {
 //        return ERR_NO_MAP;
-//
 //    }
-//
-//    if (pacY == -1 || pacX == -1 || pacX >= map_width || pacY >= map_height) {
-//
-//        printf("No pacman found on the map.\n");
-//        return ERR_NO_PACMAN;
-//    }
+
+    if (pacY == -1 || pacX == -1 || pacX >= map_width || pacY >= map_height) {
+
+        printf("No pacman found on the map.\n");
+        return ERR_NO_PACMAN;
+    }
 
     // printf("Map dimensions: %d x %d\n", map_width, map_height);
 
@@ -64,6 +62,7 @@ int main(void) {
 
     // printf("%d, %d", pacX, pacY);
 
+    int run = 1;
     while (run) {
 
 //        printf("Enter direction: ");
@@ -74,7 +73,7 @@ int main(void) {
         int result = move_actor(&pacY, &pacX, direction, EAT_DOTS);
 
         if (result == MOVED_WALL) {
-            printf("Pacman cannot move in to a wall DUMBASS!\n");
+            printf("Pacman cannot move in to a wall, DUMBNESS!\n");
         } else if (result == MOVED_INVALID_DIRECTION) {
             printf("Do you live under a rock? The options are W,A,S,D.\n");
         }
@@ -83,32 +82,32 @@ int main(void) {
 //            break;
 //        }
 
-        char ghost_direction = sees_pacman(pacY, pacX, ghost_Y[MAX_GHOSTS], ghost_X[MAX_GHOSTS]);
+        for (int i = 0; i < MAX_GHOSTS; i++) {
+            char ghost_direction = sees_pacman(pacY, pacX, ghost_Y[i], ghost_X[i]);
+            move_actor(&ghost_Y[i], &ghost_X[i], ghost_direction, 0);
+        }
 
-        move_actor(&ghost_Y[1], &ghost_X[1], ghost_direction, 0);
-        move_actor(&ghost_Y[0], &ghost_X[0], ghost_direction, 0);
-
-        printf("%c\n", ghost_direction);
+//        printf("%c\n", ghost_direction);
 
 //        printf("%d\n",ghost_Y[1]);
 
 
         print_map(map_width, map_height);
 
-        if (check_win(pacY, pacX, &ghost_Y[MAX_GHOSTS], &ghost_X[MAX_GHOSTS])) {
+        if (check_win(pacY, pacX, ghost_Y, ghost_X)) {
             run = 0;
-            printf("You lose!");
+            printf("Congratulations! You win!");
 
-        } else if(check_loss(pacY, pacX, &ghost_Y[MAX_GHOSTS], &ghost_X[MAX_GHOSTS])) {
+        } else if(check_loss(pacY, pacX, ghost_Y, ghost_X)) {
             run = 0;
-            printf("You win!");
+            printf("Boohoo, you lose");
 
         }
 
     }
 
-
     free(map);
+    free(dot_map);
 
     return NO_ERROR;
 }

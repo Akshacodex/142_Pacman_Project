@@ -11,7 +11,7 @@
  * The function must allocate space using malloc/realloc and load
  * the map file contents into it.  The return value is the pointer
  * to the allocated and populated memory, and the height/width values
- * that are returned via the map_height/map_width pass-by-reference
+ * that are returned via the height/map_width pass-by-reference
  * parameters.
  *
  * The function can assume that the parameters are valid pointers, but
@@ -25,7 +25,7 @@
  * defines.h.  The function can assume that the map is a rectangle.
  *
  * On error, the function should return NULL and should not write to
- * map_height or map_width.
+ * height or map_width.
  *
  * For example, if the map file contains the map:
  * .  P  .  .
@@ -33,14 +33,14 @@
  * G  .  .  G
  * Then the function should return a dynamically allocated array:
  * {'.', 'P', '.', '.', 'W', ' ', 'W', 'W', 'G', '.', '.', 'G'}
- * and set *map_height = 3, *map_width = 4.
+ * and set *height = 3, *map_width = 4.
  *
  * @param filename A string containing the map file name to read
- * @param map_height A pointer to where the map height should be stored
+ * @param height A pointer to where the map height should be stored
  * @param map_width A pointer to where the map width should be stored
  * @return A pointer to the loaded map, or NULL on error
  */
-char * load_map(char * filename, int * map_height, int *map_width);
+char * load_map(char * filename, int * height, int *map_width);
 
 #define NOT_WALL 0
 #define YES_WALL 1
