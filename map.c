@@ -14,32 +14,33 @@ extern char *map, *dot_map;
 int w = 0, h = 1;
 
 int move_actor(int * y, int * x, char direction, int eat_dots) {
+    int prevY = *y;
+    int prevX = *x;
 
-    map[*y * w + *x] = ' ';
 
     switch (direction) {
-        case 'w':
+        case UP:
             if (*y > 0 && !is_wall(*y - 1, *x)) {
                 (*y)--;
             } else {
                 return MOVED_WALL;
             }
             break;
-        case 'a':
+        case LEFT:
             if (*x > 0 && !is_wall(*y, *x - 1)) {
                 (*x)--;
             } else {
                 return MOVED_WALL;
             }
             break;
-        case 's':
+        case DOWN:
             if (*y < map_height - 1 && !is_wall(*y + 1, *x)) {
                 (*y)++;
             } else {
                 return MOVED_WALL;
             }
             break;
-        case 'd':
+        case RIGHT:
             if (*x < map_width - 1 && !is_wall(*y, *x + 1)) {
                 (*x)++;
             } else {
@@ -50,7 +51,14 @@ int move_actor(int * y, int * x, char direction, int eat_dots) {
             return MOVED_INVALID_DIRECTION;
     }
 
-    map[*y * w + *x] = 'P';
+    if (eat_dots == EAT_DOTS) {
+        map[*y * w + *x] = PACMAN;
+        map[prevY * w + prevX] = EMPTY;
+        dot_map[prevY * w + prevX] = EMPTY;
+    } else {
+        map[*y * w + *x] = GHOST;
+        map[prevY * w + prevX] = dot_map[*y * w + *x];
+    }
 
     return MOVED_OKAY;
 }
@@ -80,7 +88,7 @@ char * load_map(char * filename, int* map_height, int* map_width) {
         if (characters == '\n') {
             h++;
         }
-        else if (characters == 'W' || characters == 'G' || characters== '.' || characters=='P'){
+        else if (characters == WALL || characters == GHOST || characters == DOT || characters == PACMAN){
             w++;
         }
     } while(characters != EOF);
@@ -93,36 +101,43 @@ char * load_map(char * filename, int* map_height, int* map_width) {
 
     map = (char *)malloc((w * h) * sizeof(char));
 
+    dot_map = (char *)malloc((w * h) * sizeof(char));
+
     for (int i = 0; i < w; ++i) {
-        map[i] = 'W';
+        map[i] = WALL;
     }
 
     int counter = 0;
     for (int y = w; y < (h - 1) * w; ++y) {
         if (y % w == 0 || (y % ((2 * w - 1) + counter * w)) == 0){
             if (y % w == 0) {
-                map[y] = 'W';
+                map[y] = WALL;
             }
             if (y % ((2 * w - 1) + counter * w) == 0) {
-                map[y] = 'W';
+                map[y] = WALL;
                 counter++;
             }
         } else {
             fscanf(file, " %c", &map[y]);
-            if (map[y] == 'P') {
+            if (map[y] == PACMAN) {
                 pacX = y % w;
                 pacY = y / h;
-               // printf("%d, %d", pacX, pacY);
+//              printf("%d, %d", pacX, pacY);
             }
-            if (map[y] == 'G') {
+            if (map[y] == GHOST) {
                 ghost_X = y % w;
                 ghost_Y = y / h;
-                printf("%d, %d\n", ghost_X, ghost_Y);
+//              printf("%d, %d\n", ghost_X, ghost_Y);
+            }
+            if (map[y] == DOT) {
+                dot_map[y] = map[y];
+            } else {
+                dot_map[y] = ' ';
             }
         }
     }
     for (int i = (h - 1) * w; i < h * w; ++i) {
-        map[i] = 'W';
+        map[i] = WALL;
     }
 
     fclose(file);
@@ -137,16 +152,16 @@ void print_map(int i, int j) {
     for (int y = 0; y < j; ++y) {
         for (int x = 0; x < i; ++x) {
             switch (map[y * i + x]) {
-                case 'W':
+                case WALL:
                     change_text_colour(WHITE);
                     break;
-                case 'G':
+                case GHOST:
                     change_text_colour(PINK);
                     break;
-                case 'P':
+                case PACMAN:
                     change_text_colour(YELLOW);
                     break;
-                case '.':
+                case DOT:
                     change_text_colour(BLUE);
                     break;
                 default:

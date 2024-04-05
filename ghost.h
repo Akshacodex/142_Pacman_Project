@@ -34,5 +34,7 @@ char sees_pacman(int pacman_y, int pacman_x, int ghost_y, int ghost_x);
 
 extern int ghost_X, ghost_Y;
 
+//extern int ghostX, ghostY;
+
 
 #endif //PROJECT_GHOST_H

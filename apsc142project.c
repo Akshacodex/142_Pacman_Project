@@ -25,6 +25,9 @@ char *map = NULL, *dot_map = NULL;
 int map_width, map_height;
 int pacX, pacY;
 char direction;
+int ghostX, ghostY;
+int ghost_X, ghost_Y;
+int run = 1;
 
 
 /**
@@ -42,7 +45,19 @@ char direction;
 int main(void) {
     setbuf(stdout, NULL);
 
-    load_map("map.txt", &map_height, &map_width);
+    load_map(MAP_NAME, &map_height, &map_width);
+
+//    if (map == NULL || map_width <= 0 || map_height <= 0){
+//
+//        return ERR_NO_MAP;
+//
+//    }
+//
+//    if (pacY == -1 || pacX == -1 || pacX >= map_width || pacY >= map_height) {
+//
+//        printf("No pacman found on the map.\n");
+//        return ERR_NO_PACMAN;
+//    }
 
     // printf("Map dimensions: %d x %d\n", map_width, map_height);
 
@@ -50,36 +65,46 @@ int main(void) {
 
     // printf("%d, %d", pacX, pacY);
 
-    while (1) {
+    while (run) {
 
-        printf("Enter direction: ");
+//        printf("Enter direction: ");
         direction = getch();
-        printf("%c", direction);
+//        printf("%c", direction);
         printf("\n");
 
-        int result = move_actor(&pacY, &pacX, direction, 0);
+        int result = move_actor(&pacY, &pacX, direction, EAT_DOTS);
 
-        if (result == MOVED_OKAY) {
-
-            print_map(map_width, map_height);
-
-        } else if (result == MOVED_WALL) {
-
+        if (result == MOVED_WALL) {
             printf("Pacman cannot move in to a wall DUMBASS!\n");
-
         } else if (result == MOVED_INVALID_DIRECTION) {
-
             printf("Do you live under a rock? The options are W,A,S,D.\n");
-
         }
 
 //        if () {
 //            break;
 //        }
 
+        char ghost_direction = sees_pacman(pacY, pacX, ghost_Y, ghost_X);
+
+        move_actor(&ghostY, &ghostX, ghost_direction, 0);
+        printf("%c\n", ghost_direction);
+
+        print_map(map_width, map_height);
+
+        if (check_win(pacY, pacX, &ghost_Y, &ghost_X)) {
+            run = 0;
+            printf("You lose!");
+        } else if(check_loss(pacY, pacX, &ghost_Y, &ghost_X)) {
+            run = 0;
+            printf("You win!");
+        }
+
+
     }
+
 
     free(map);
 
     return NO_ERROR;
 }
+
