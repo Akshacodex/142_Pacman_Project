@@ -32,9 +32,13 @@ char sees_pacman(int pacman_y, int pacman_x, int ghost_y, int ghost_x);
 
 /** Other function prototypes can go below here **/
 
-extern int ghost_X, ghost_Y;
+#define MAX_GHOSTS 2
+
+extern int ghost_X[MAX_GHOSTS];
+extern int ghost_Y[MAX_GHOSTS];
 
 //extern int ghostX, ghostY;
 
+#define MOVE_RANDOMLY 'M'
 
 #endif //PROJECT_GHOST_H

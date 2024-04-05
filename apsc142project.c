@@ -25,8 +25,7 @@ char *map = NULL, *dot_map = NULL;
 int map_width, map_height;
 int pacX, pacY;
 char direction;
-int ghostX, ghostY;
-int ghost_X, ghost_Y;
+int ghost_X[MAX_GHOSTS], ghost_Y[MAX_GHOSTS];
 int run = 1;
 
 
@@ -84,21 +83,27 @@ int main(void) {
 //            break;
 //        }
 
-        char ghost_direction = sees_pacman(pacY, pacX, ghost_Y, ghost_X);
+        char ghost_direction = sees_pacman(pacY, pacX, ghost_Y[MAX_GHOSTS], ghost_X[MAX_GHOSTS]);
 
-        move_actor(&ghostY, &ghostX, ghost_direction, 0);
+        move_actor(&ghost_Y[1], &ghost_X[1], ghost_direction, 0);
+        move_actor(&ghost_Y[0], &ghost_X[0], ghost_direction, 0);
+
         printf("%c\n", ghost_direction);
+
+//        printf("%d\n",ghost_Y[1]);
+
 
         print_map(map_width, map_height);
 
-        if (check_win(pacY, pacX, &ghost_Y, &ghost_X)) {
+        if (check_win(pacY, pacX, &ghost_Y[MAX_GHOSTS], &ghost_X[MAX_GHOSTS])) {
             run = 0;
             printf("You lose!");
-        } else if(check_loss(pacY, pacX, &ghost_Y, &ghost_X)) {
+
+        } else if(check_loss(pacY, pacX, &ghost_Y[MAX_GHOSTS], &ghost_X[MAX_GHOSTS])) {
             run = 0;
             printf("You win!");
-        }
 
+        }
 
     }
 

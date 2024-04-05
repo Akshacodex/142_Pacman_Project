@@ -17,6 +17,22 @@ int move_actor(int * y, int * x, char direction, int eat_dots) {
     int prevY = *y;
     int prevX = *x;
 
+    if (direction == MOVE_RANDOMLY) {
+        switch (rand() % 4) {
+            case 0:
+                direction = UP;
+                break;
+            case 1:
+                direction = DOWN;
+                break;
+            case 2:
+                direction = LEFT;
+                break;
+            case 3:
+                direction = RIGHT;
+                break;
+        }
+    }
 
     switch (direction) {
         case UP:
@@ -106,7 +122,7 @@ char * load_map(char * filename, int* map_height, int* map_width) {
     for (int i = 0; i < w; ++i) {
         map[i] = WALL;
     }
-
+    int ghostCounter = 0;
     int counter = 0;
     for (int y = w; y < (h - 1) * w; ++y) {
         if (y % w == 0 || (y % ((2 * w - 1) + counter * w)) == 0){
@@ -125,14 +141,16 @@ char * load_map(char * filename, int* map_height, int* map_width) {
 //              printf("%d, %d", pacX, pacY);
             }
             if (map[y] == GHOST) {
-                ghost_X = y % w;
-                ghost_Y = y / h;
-//              printf("%d, %d\n", ghost_X, ghost_Y);
+                ghost_X[ghostCounter] = y % w;
+                ghost_Y[ghostCounter] = y / w;
+                ghostCounter++;
+//              printf("%d, %d\n", ghost_X[ghostCounter], ghost_Y[ghostCounter]);
+
             }
             if (map[y] == DOT) {
                 dot_map[y] = map[y];
             } else {
-                dot_map[y] = ' ';
+                dot_map[y] = EMPTY;
             }
         }
     }
