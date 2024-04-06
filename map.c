@@ -112,6 +112,14 @@ char * load_map(char * filename, int* map_height, int* map_width) {
         return NULL;
     }
 
+    int map_check = getc(file);
+    if (map_check == EOF) {
+        fclose(file);
+        return (char *) ERR_NO_MAP;
+    }
+
+    rewind(file);
+
     char characters;
 
     do {
@@ -127,8 +135,7 @@ char * load_map(char * filename, int* map_height, int* map_width) {
 //    printf("width %d\n", w);
 //    printf("height %d\n", h);
 
-    w /= h;
-    w += 2;
+    w =(w / h) + 2;
     h += 2;
 
 //    printf("%d %d\n",w,h);
@@ -192,6 +199,9 @@ void print_map(int i, int j) {
         for (int x = 0; x < i; ++x) {
             switch (map[y * i + x]) {
                 case WALL:
+                    change_text_colour(BLUE);
+                    break;
+                case DOT:
                     change_text_colour(WHITE);
                     break;
                 case GHOST:
@@ -199,9 +209,6 @@ void print_map(int i, int j) {
                     break;
                 case PACMAN:
                     change_text_colour(YELLOW);
-                    break;
-                case DOT:
-                    change_text_colour(BLUE);
                     break;
                 default:
                     change_text_colour(WHITE);

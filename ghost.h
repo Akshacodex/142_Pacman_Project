@@ -34,8 +34,7 @@ char sees_pacman(int pacman_y, int pacman_x, int ghost_y, int ghost_x);
 
 #define MAX_GHOSTS 2
 
-extern int ghost_X[MAX_GHOSTS];
-extern int ghost_Y[MAX_GHOSTS];
+extern int ghost_X[MAX_GHOSTS], ghost_Y[MAX_GHOSTS];
 
 //extern int ghostX, ghostY;
 

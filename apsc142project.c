@@ -47,14 +47,19 @@ int main(void) {
     load_map(MAP_NAME, &map_height, &map_width);
 
     if (pacY == -1 || pacX == -1 || pacX >= map_width || pacY >= map_height) {
-
-        printf("No pacman found on the map.\n");
         return ERR_NO_PACMAN;
-
     }
-    else if (ghost_Y == -1 || ghost_X == -1 || ghost_X >= map_width || ghost_Y >= map_height) {
 
-        printf("No Ghost found on the map.\n");
+    int ghost_found = 0;
+
+    for (int i = 0; i < map_height * map_width; i++) {
+        if (map[i] == GHOST) {
+            ghost_found = 1;
+            break;
+        }
+    }
+
+    if (!ghost_found) {
         return ERR_NO_GHOSTS;
     }
 
@@ -77,7 +82,7 @@ int main(void) {
         int result = move_actor(&pacY, &pacX, direction, EAT_DOTS);
 
         if (result == MOVED_WALL) {
-//            printf("Pacman cannot move in to a wall, DUMBNESS!\n");
+//            printf("Pacman cannot move in to a wall!\n");
         } else if (result == MOVED_INVALID_DIRECTION) {
 //            printf("Do you live under a rock? The options are W,A,S,D.\n");
         }
@@ -100,7 +105,7 @@ int main(void) {
 
         } else if(check_loss(pacY, pacX, ghost_Y, ghost_X)) {
             run = 0;
-            printf("Boohoo, you lose");
+            printf("Sorry, you lose.");
 
         }
 
