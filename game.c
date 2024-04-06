@@ -7,8 +7,7 @@
 #include "map.h"
 
 extern char * map, * dot_map;
-extern int map_height;
-extern int map_width;
+
 
 int check_win(int pacman_y, int pacman_x, int ghosts_y[NUM_GHOSTS], int ghosts_x[NUM_GHOSTS]) {
 
