@@ -22,10 +22,10 @@ int check_win(int pacman_y, int pacman_x, int ghosts_y[NUM_GHOSTS], int ghosts_x
     return YOU_WIN;
 }
 
-
 int check_loss(int pacman_y, int pacman_x, int ghosts_y[NUM_GHOSTS], int ghosts_x[NUM_GHOSTS]) {
     for (int i = 0; i < NUM_GHOSTS; i++) {
         if (ghosts_y[i] == pacman_y && ghosts_x[i] == pacman_x) {
+
             map[pacman_y * map_width + pacman_x] = EMPTY;
 
             map[ghosts_y[i] * map_width + ghosts_x[i]] = GHOST;

@@ -16,10 +16,8 @@ int w = 0, h = 1;
 
 int move_actor(int * y, int * x, char direction, int eat_dots) {
 
-
     int prevY = *y;
     int prevX = *x;
-
 
     if (direction == MOVE_RANDOMLY) {
         int valid_directions[4];
@@ -40,7 +38,6 @@ int move_actor(int * y, int * x, char direction, int eat_dots) {
         }
 
 //        printf("%d\n", num_valid);
-
 
         for (int i = num_valid - 1; i > 0; --i) {
             int j = rand() % (i + 1);
@@ -85,8 +82,6 @@ int move_actor(int * y, int * x, char direction, int eat_dots) {
             return MOVED_INVALID_DIRECTION;
     }
 
-
-
     if (eat_dots == EAT_DOTS) {
         map[*y * w + *x] = PACMAN;
         map[prevY * w + prevX] = EMPTY;
@@ -129,13 +124,14 @@ char * load_map(char * filename, int* map_height, int* map_width) {
         }
     } while(characters != EOF);
 
-    printf("width %d\n", w);
-    printf("height %d\n", h);
+//    printf("width %d\n", w);
+//    printf("height %d\n", h);
 
     w /= h;
     w += 2;
     h += 2;
-    printf("%d %d\n",w,h);
+
+//    printf("%d %d\n",w,h);
 
     rewind(file);
 
@@ -146,6 +142,7 @@ char * load_map(char * filename, int* map_height, int* map_width) {
     for (int i = 0; i < w; ++i) {
         map[i] = WALL;
     }
+
     int ghostCounter = 0;
     int counter = 0;
     for (int y = w; y < (h - 1) * w; ++y) {
