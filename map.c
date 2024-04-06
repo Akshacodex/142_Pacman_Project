@@ -10,28 +10,46 @@
 #include "ghost.h"
 
 extern char *map, *dot_map;
+extern int map_width, map_height;
 
 int w = 0, h = 1;
 
 int move_actor(int * y, int * x, char direction, int eat_dots) {
+
+
     int prevY = *y;
     int prevX = *x;
 
+
     if (direction == MOVE_RANDOMLY) {
-        switch (rand() % 4) {
-            case 0:
-                direction = UP;
-                break;
-            case 1:
-                direction = DOWN;
-                break;
-            case 2:
-                direction = LEFT;
-                break;
-            case 3:
-                direction = RIGHT;
-                break;
+        int valid_directions[4];
+        int num_valid = 0;
+
+        if (*y > 0 && !is_wall(*y - 1, *x)) {
+            valid_directions[num_valid++] = UP;
         }
+        if (*y < map_height - 1 && !is_wall(*y + 1, *x)) {
+            valid_directions[num_valid++] = DOWN;
+        }
+        if (*x > 0 && !is_wall(*y, *x - 1)) {
+
+            valid_directions[num_valid++] = LEFT;
+        }
+        if (*x < map_width - 1 && !is_wall(*y, *x + 1)) {
+            valid_directions[num_valid++] = RIGHT;
+        }
+
+//        printf("%d\n", num_valid);
+
+
+        for (int i = num_valid - 1; i > 0; --i) {
+            int j = rand() % (i + 1);
+            int temp = valid_directions[i];
+            valid_directions[i] = valid_directions[j];
+            valid_directions[j] = temp;
+        }
+
+        direction = valid_directions[rand() % num_valid];
     }
 
     switch (direction) {
@@ -67,13 +85,15 @@ int move_actor(int * y, int * x, char direction, int eat_dots) {
             return MOVED_INVALID_DIRECTION;
     }
 
+
+
     if (eat_dots == EAT_DOTS) {
         map[*y * w + *x] = PACMAN;
         map[prevY * w + prevX] = EMPTY;
-        dot_map[prevY * w + prevX] = EMPTY;
-    } else {
+        dot_map[*y * w + *x] = EMPTY;
+    } else if(eat_dots == REPLACE_DOTS) {
         map[*y * w + *x] = GHOST;
-        map[prevY * w + prevX] = dot_map[*y * w + *x];
+        map[prevY * w + prevX] = dot_map[prevY * w + prevX];
     }
 
     return MOVED_OKAY;
@@ -109,9 +129,13 @@ char * load_map(char * filename, int* map_height, int* map_width) {
         }
     } while(characters != EOF);
 
+    printf("width %d\n", w);
+    printf("height %d\n", h);
+
     w /= h;
     w += 2;
     h += 2;
+    printf("%d %d\n",w,h);
 
     rewind(file);
 
@@ -137,8 +161,8 @@ char * load_map(char * filename, int* map_height, int* map_width) {
             fscanf(file, " %c", &map[y]);
             if (map[y] == PACMAN) {
                 pacX = y % w;
-                pacY = y / h;
-//              printf("%d, %d", pacX, pacY);
+                pacY = y / w;
+//                printf("%d, %d\n", pacX, pacY);
             }
             if (map[y] == GHOST) {
                 ghost_X[ghostCounter] = y % w;
@@ -187,8 +211,12 @@ void print_map(int i, int j) {
                     break;
             }
             printf("%c  ", map[(y * i) + x]);
-            //printf("%d  ", y * 11 + x);
+//            printf("%d  ", y * 11 + x);
         }
+//        printf(" ");
+//        for (int x = 0; x < i; ++x) {
+//            printf("%c  ", dot_map[(y * i) + x]);
+//        }
         printf("\n");
     }
 }
