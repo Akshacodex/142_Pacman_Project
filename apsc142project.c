@@ -23,8 +23,11 @@
 char *map = NULL, *dot_map = NULL;
 // width and height store the width and height of map, NOT counting outer walls
 int map_width, map_height;
+// Variables used to store the coordinates of Pacman
 int pacX = -1, pacY = -1;
+// Variable to store the direction of actors movement in move_actor function
 char direction;
+// Arrays to store the coordinates of every ghosts
 int ghost_X[MAX_GHOSTS], ghost_Y[MAX_GHOSTS];
 
 
@@ -42,68 +45,66 @@ int ghost_X[MAX_GHOSTS], ghost_Y[MAX_GHOSTS];
  * @return a status code
  */
 int main(void) {
+
+    //  The setbuf line is here so that print statements appears before the user input statements
     setbuf(stdout, NULL);
 
+    // Loading the map from the file
     load_map(MAP_NAME, &map_height, &map_width);
 
+    // Checking if there's a Pacman on the map
     if (pacY == -1 || pacX == -1 || pacX >= map_width || pacY >= map_height) {
         return ERR_NO_PACMAN;
     }
 
+    // Checking to make sure if the number of ghosts on the map equal MAX_GHOSTS
     int ghost_found = 0;
-
     for (int i = 0; i < map_height * map_width; i++) {
         if (map[i] == GHOST) {
-            ghost_found = 1;
-            break;
+            ghost_found++;
         }
     }
-
-    if (!ghost_found) {
+    if (ghost_found < MAX_GHOSTS) {
         return ERR_NO_GHOSTS;
     }
 
-//     printf("Map dimensions: %d x %d\n", map_width, map_height);
-
-//    printf("w:%d h:%d\n", map_width, map_height);
-
+    // Printing the initial map
     print_map(map_width, map_height);
 
-    // printf("%d, %d", pacX, pacY);
-
+    // Game Loop Setting the run variable to 1 to make it an infinite loop
     int run = 1;
     while (run) {
 
-//        printf("Enter direction: ");
+        // Gets the direction from the user without the user needing to press enter
         direction = getch();
-//        printf("%c", direction);
-        printf("\n");
 
-        int result = move_actor(&pacY, &pacX, direction, EAT_DOTS);
+        // Moving the pacman using the direction we received from the user
+        int move_result = move_actor(&pacY, &pacX, direction, EAT_DOTS);
 
-        if (result == MOVED_WALL) {
-//            printf("Pacman cannot move in to a wall!\n");
-        } else if (result == MOVED_INVALID_DIRECTION) {
-//            printf("Do you live under a rock? The options are W,A,S,D.\n");
+        // Checking if the move result is okay
+        if (move_result == MOVED_WALL) {
+            // Pacman cannot move into a wall
+        } else if (move_result == MOVED_INVALID_DIRECTION) {
+            // Invalid input entered
         }
 
+        // A loop used to move all ghosts
         for (int i = 0; i < MAX_GHOSTS; i++) {
             char ghost_direction = sees_pacman(pacY, pacX, ghost_Y[i], ghost_X[i]);
             move_actor(&ghost_Y[i], &ghost_X[i], ghost_direction, 0);
         }
 
-//        printf("%c\n", ghost_direction);
-
-//        printf("%d\n",ghost_Y[1]);
-
+        // Printing the updated map
         print_map(map_width, map_height);
 
-
+        // Checking for game over conditions
         if (check_win(pacY, pacX, ghost_Y, ghost_X)) {
+            // Setting run to 0 to exit the game loop
             run = 0;
             printf("Congratulations! You win!");
 
         } else if(check_loss(pacY, pacX, ghost_Y, ghost_X)) {
+            // Setting run to 0 to exit the game loop
             run = 0;
             printf("Sorry, you lose.");
 
@@ -111,6 +112,7 @@ int main(void) {
 
     }
 
+    // Freeing allocated memory
     free(map);
     free(dot_map);
 

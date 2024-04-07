@@ -32,12 +32,13 @@ char sees_pacman(int pacman_y, int pacman_x, int ghost_y, int ghost_x);
 
 /** Other function prototypes can go below here **/
 
+// Defining the max amount of ghosts allowed in the game.
 #define MAX_GHOSTS 2
 
+// Declares ana array to store the X and Y coordinates of the Ghost
 extern int ghost_X[MAX_GHOSTS], ghost_Y[MAX_GHOSTS];
 
-//extern int ghostX, ghostY;
-
+// Defining a constant that represents a random move for the ghost.
 #define MOVE_RANDOMLY 'M'
 
 #endif //PROJECT_GHOST_H

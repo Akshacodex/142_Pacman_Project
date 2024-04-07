@@ -95,10 +95,13 @@ int move_actor(int * y, int * x, char direction, int eat_dots);
 
 /** Other function prototypes can go below here **/
 
+// This function is used to print map after every move.
 void print_map(int i, int j);
 
+// This variable is made to find the position of the Pacman
 extern int pacX, pacY;
 
+// This variable is used to store width and height of the map.
 extern int map_width, map_height;
 
 #endif //PROJECT_MAP_H
